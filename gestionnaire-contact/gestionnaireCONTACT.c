@@ -21,7 +21,7 @@ void ajouter_contact(Contact **contacts, int *taille) {
     scanf("%s", (*contacts)[*taille].nom);
     printf("Prénom: ");
     scanf("%s", (*contacts)[*taille].prenom);
-    printf("Téléphon: ");
+    printf("Téléphone: ");
     scanf("%s", (*contacts)[*taille].telephone);
     printf("Email: ");
     scanf("%s", (*contacts)[*taille].email);
@@ -30,18 +30,45 @@ void ajouter_contact(Contact **contacts, int *taille) {
     printf("\n [+] - contact ajouter ! \n");
 }
 
+void supprimer_contact(Contact **contacts, int *taille) {
+    char nom_suppr[50];
+    printf("Entrée le nom à supprimer: ");
+    scanf("%s", nom_suppr);
+
+    int index = -1;
+    for(int i = 0; i < *taille; i++) {
+        if(strcmp(nom_suppr, (*contacts)[i].nom) == 0) {
+            index = i;
+            break;
+        }        
+    }
+
+    if(index == -1) {
+        printf("contact introuvable \n");
+        return;
+    }
+
+    for(int i = index; i < *taille-1; i++) {
+        (*contacts)[i] = (*contacts)[i+1];
+    }
+
+    *contacts = realloc(*contacts, (*taille-1)*sizeof(Contact));
+    (*taille)--;
+    printf("\n [-] - contact supprimer ! \n");
+}
+
 void chercher_contact(Contact *contacts, int taille) {
     char nom_rechercher[50];
     printf("Entrée le nom rechercher: ");
     scanf("%s", nom_rechercher);
 
     for(int i = 0; i < taille; i++) {
-        if (strcmp(nom_rechercher, contacts[i].nom)) {
+        if (strcmp(nom_rechercher, contacts[i].nom) == 0) {
             printf("\n [?] - contact trouvé ! \n");
-            printf("Nom       : %s", contacts[i].nom);
-            printf("Prénom    : %s", contacts[i].prenom);
-            printf("Téléphone : %s", contacts[i].telephone);
-            printf("Email     : %s", contacts[i].email);
+            printf("- Nom       : %s\n", contacts[i].nom);
+            printf("- Prénom    : %s\n", contacts[i].prenom);
+            printf("- Téléphone : %s\n", contacts[i].telephone);
+            printf("- Email     : %s\n", contacts[i].email);
         }
         else{
             printf("\n [?] - contact introuvable \n");
@@ -58,10 +85,10 @@ void afficher_contact(Contact *contacts, int taille) {
 
     for(int i = 0; i < taille; i++) {
         printf("\n | Contact | \n");
-        printf("Nom       : %s", contacts[i].nom);
-        printf("Prénom    : %s", contacts[i].prenom);
-        printf("Téléphone : %s", contacts[i].telephone);
-        printf("Email     : %s", contacts[i].email);
+        printf("- Nom       : %s\n", contacts[i].nom);
+        printf("- Prénom    : %s\n", contacts[i].prenom);
+        printf("- Téléphone : %s\n", contacts[i].telephone);
+        printf("- Email     : %s\n", contacts[i].email);
     }
 }
 
@@ -91,7 +118,7 @@ int main() {
             chercher_contact(contacts, taille);
             break;
         case 4:
-            afficher_contacts(contacts, taille);
+            afficher_contact(contacts, taille);
             break;
         case 5:
             printf("au revoir le s !!!");
