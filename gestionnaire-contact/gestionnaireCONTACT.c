@@ -122,7 +122,7 @@ int main() {
             break;
         case 5:
             printf("au revoir le s !!!");
-            break;        
+            break;
         default:
             printf("Choix invalide...");
         }
