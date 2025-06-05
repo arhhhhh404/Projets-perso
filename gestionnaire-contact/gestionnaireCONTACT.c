@@ -13,7 +13,7 @@ void ajouter_contact(Contact **contacts, int *taille) {
     *contacts = realloc(*contacts, (*taille + 1)*sizeof(Contact));
 
     if (*contacts == NULL) {
-        printf("Erreur d'allocation mémoire \n");
+        printf("[!] - Erreur d'allocation mémoire \n");
         return;
     }
 
@@ -32,7 +32,7 @@ void ajouter_contact(Contact **contacts, int *taille) {
 
 void supprimer_contact(Contact **contacts, int *taille) {
     char nom_suppr[50];
-    printf("Entrée le nom à supprimer: ");
+    printf(">   Entrée le nom à supprimer: ");
     scanf("%s", nom_suppr);
 
     int index = -1;
@@ -44,7 +44,7 @@ void supprimer_contact(Contact **contacts, int *taille) {
     }
 
     if(index == -1) {
-        printf("contact introuvable \n");
+        printf("[!] - contact introuvable \n");
         return;
     }
 
@@ -59,7 +59,7 @@ void supprimer_contact(Contact **contacts, int *taille) {
 
 void chercher_contact(Contact *contacts, int taille) {
     char nom_rechercher[50];
-    printf("Entrée le nom rechercher: ");
+    printf(">   Entrée le nom rechercher: ");
     scanf("%s", nom_rechercher);
 
     for(int i = 0; i < taille; i++) {
@@ -71,15 +71,14 @@ void chercher_contact(Contact *contacts, int taille) {
             printf("- Email     : %s\n", contacts[i].email);
         }
         else{
-            printf("\n [?] - contact introuvable \n");
+            printf("[!] - contact introuvable \n");
         }
     }
-
 }
 
 void afficher_contact(Contact *contacts, int taille) {
     if (taille = 0) {
-        printf("\n aucun contact \n");
+        printf("[!] - aucun contact \n");
         return;
     }
 
@@ -90,6 +89,29 @@ void afficher_contact(Contact *contacts, int taille) {
         printf("- Téléphone : %s\n", contacts[i].telephone);
         printf("- Email     : %s\n", contacts[i].email);
     }
+}
+
+void enregistrer_fichier(Contact *contacts, int taille) {
+    char nomFichier[100];
+    printf(">   Entrer le nom du fichier: ");
+    scanf("%s", nomFichier);
+
+    FILE *fichier = fopen(nomFichier, "w");
+    if (fichier == NULL) {
+        printf("[!] - Erreur lors de l'ouverture du fichier \n");
+        return;
+    }
+
+    for(int i = 0; i < taille; i++) {
+        fprintf(fichier, "Nom: %s\n", contacts[i].nom);
+        fprintf(fichier, "Prénom: %s\n", contacts[i].prenom);
+        fprintf(fichier, "Téléphone: %s\n", contacts[i].telephone);
+        fprintf(fichier, "Email: %s\n", contacts[i].email);
+        fprintf(fichier, "--------------------------------------------\n");
+    }
+
+    fclose(fichier);
+    printf("\n [:] - Contacts enregistrer dans '%s' !\n", nomFichier);
 }
 
 int main() {
@@ -103,8 +125,9 @@ int main() {
         printf("2. Supprimer un contact \n");
         printf("3. Chercher un contact \n");
         printf("4. Afficher tous les contacts \n");
-        printf("5. quitter \n");
-        printf("Votre choix : ");
+        printf("5. Enregistrer les contacts \n");
+        printf("6. quitter \n");
+        printf("> Votre choix : ");
         scanf("%d", &choix);
 
         switch (choix) {
@@ -121,6 +144,9 @@ int main() {
             afficher_contact(contacts, taille);
             break;
         case 5:
+            enregistrer_fichier(contacts, taille);
+            break;
+        case 6:
             printf("au revoir le s !!!");
             break;
         default:

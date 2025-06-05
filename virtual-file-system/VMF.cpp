@@ -10,12 +10,13 @@ struct File {
     File(const std::string& n) : name(n), content("") {};
 };
 
-struct Directory {
+struct Directory : std::enable_shared_from_this<Directory> {
     std::string name;
     std::vector < std::shared_ptr<File> > files;
     std::vector < std::shared_ptr<Directory> > subdirs;
+    std::weak_ptr<Directory> parent;
 
-    Directory(const std::string& m): name(m) {};
+    Directory(const std::string& m, std::shared_ptr<Directory> p = nullptr): name(m), parent(p) {};
 
     std::shared_ptr<Directory> getSubdir(const std::string& dirname) {
         for (auto& d : subdirs) {
@@ -27,15 +28,15 @@ struct Directory {
 
     std::shared_ptr<File> getFile(const std::string& filename) {
         for (auto& f : files) {
-            if (f->name == filename);
-            return f;
+            if (f->name == filename)
+                return f;
         }
         return nullptr;
     }
 
     void create_subdir(const std::string& dirname) {
         if (getSubdir(dirname) == nullptr) {
-            subdirs.push_back(std::make_shared<Directory>(dirname));
+            subdirs.push_back(std::make_shared<Directory>(dirname, shared_from_this()));
             std::cout << "[+]: Dir : " << dirname << " created." << std::endl;
         }
         else {
@@ -62,7 +63,7 @@ struct Directory {
         for (auto& f : files) {
             std::cout << "(F): " << f->name << std::endl;
         }
-    }
+    };
 };
 
 class VFS {
@@ -85,6 +86,25 @@ class VFS {
     
     void ls() {
         current -> list();
+    }
+
+    void cd(const std::string& dirname) {
+        if (dirname == "/") {
+            current = root;
+        } else if (dirname == "..") {
+            if (auto parentDir = current->parent.lock()) {
+                current = parentDir;
+            } else {
+                std::cout << "[!]: Already at root." << std::endl;
+            }
+        } else {
+            auto next = current->getSubdir(dirname);
+            if(next) {
+                current = next;
+            } else {
+                std::cout << "[!]: Directory not found: " << dirname << std::endl;
+            }
+        }
     }
 };
 
@@ -110,11 +130,13 @@ int main() {
         } else if(cmd == "touch") {
             std::cin >> arg;
             vfs.touch(arg);
+        } else if(cmd == "cd") {
+            std::cin >> arg;
+            vfs.cd(arg);
         } else {
             std::cout << "[!]: Commande not found" << std::endl;
             std::getline(std::cin, arg);
         }
     }
-
     return 0;
 }
