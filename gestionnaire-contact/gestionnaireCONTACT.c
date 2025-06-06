@@ -17,13 +17,13 @@ void ajouter_contact(Contact **contacts, int *taille) {
         return;
     }
 
-    printf("Nom: ");
+    printf("-   Nom: ");
     scanf("%s", (*contacts)[*taille].nom);
-    printf("Prénom: ");
+    printf("-   Prénom: ");
     scanf("%s", (*contacts)[*taille].prenom);
-    printf("Téléphone: ");
+    printf("-   Téléphone: ");
     scanf("%s", (*contacts)[*taille].telephone);
-    printf("Email: ");
+    printf("-   Email: ");
     scanf("%s", (*contacts)[*taille].email);
 
     (*taille)++;
@@ -77,7 +77,7 @@ void chercher_contact(Contact *contacts, int taille) {
 }
 
 void afficher_contact(Contact *contacts, int taille) {
-    if (taille = 0) {
+    if (taille == 0) {
         printf("[!] - aucun contact \n");
         return;
     }
