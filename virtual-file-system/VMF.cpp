@@ -37,10 +37,10 @@ struct Directory : std::enable_shared_from_this<Directory> {
     void create_subdir(const std::string& dirname) {
         if (getSubdir(dirname) == nullptr) {
             subdirs.push_back(std::make_shared<Directory>(dirname, shared_from_this()));
-            std::cout << "[+]: Dir : " << dirname << " created." << std::endl;
+            std::cout << "  [+]: Dir : " << dirname << " created." << std::endl;
         }
         else {
-            std::cout << "[!]: Existing dir." << std::endl;
+            std::cout << "  [!]: Existing dir." << std::endl;
         }
 
     };
@@ -48,20 +48,20 @@ struct Directory : std::enable_shared_from_this<Directory> {
     void create_file(const std::string& filename) {
         if (getFile(filename) == nullptr) {
             files.push_back(std::make_shared<File>(filename));
-            std::cout << "[+]: File : " << filename << " created." << std::endl;
+            std::cout << "  [+]: File : " << filename << " created." << std::endl;
         }
         else {
-            std::cout << "[!]: Existing File." << std::endl;
+            std::cout << "  [!]: Existing File." << std::endl;
         }
     };
 
     void list () {
-        std::cout << "[?]: Content of " << name << " : " << std::endl;
+        std::cout << "  [?]: Content of " << name << " : " << std::endl;
         for (auto& d : subdirs) {
-            std::cout << "(D): " << d->name << std::endl;
+            std::cout << "      (D): " << d->name << std::endl;
         }
         for (auto& f : files) {
-            std::cout << "(F): " << f->name << std::endl;
+            std::cout << "      (F): " << f->name << std::endl;
         }
     };
 };
@@ -95,14 +95,14 @@ class VFS {
             if (auto parentDir = current->parent.lock()) {
                 current = parentDir;
             } else {
-                std::cout << "[!]: Already at root." << std::endl;
+                std::cout << "  [!]: Already at root." << std::endl;
             }
         } else {
             auto next = current->getSubdir(dirname);
             if(next) {
                 current = next;
             } else {
-                std::cout << "[!]: Directory not found: " << dirname << std::endl;
+                std::cout << "  [!]: Directory not found: " << dirname << std::endl;
             }
         }
     }
